@@ -1,6 +1,6 @@
 #!/bin/bash
 
-[[ ! $(docker network ls | grep jenkins) ]] && docker network create jenkins || echo "jenkins network exists"
+[[ $(docker network ls | grep jenkins) ]] || docker network create jenkins && echo "jenkins network exists"
 
 if [[ $(docker ps -q -f name=jenkins | wc -l) -ge 2 ]]
 then
@@ -8,6 +8,9 @@ then
   echo "Jenkins containers are already running"
   docker ps -f name=jenkins
 
+elif [[ $(docker ps -aqf name=jenkins | wc -l) -eq 2 ]]
+then
+  docker start jenkins docker-jenkins
 else
 
 docker run \
